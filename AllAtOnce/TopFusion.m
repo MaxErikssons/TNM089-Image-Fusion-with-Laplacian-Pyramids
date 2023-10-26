@@ -20,23 +20,39 @@ for i = 1:numel(pyramids)
     extendedImages{i} = cat(1, edge_y, tem_img, edge_y);
 end
 
-for y = 1:h
-    for x = 1:w
-        for c = 1:cc
-            % Initialize arrays to store statistics for each image
-            deviations = zeros(1, numel(pyramids));
-            entropies = zeros(1, numel(pyramids));
+% Preallocate arrays for deviations and entropies
+deviations = zeros(h, w, cc);
+entropies = zeros(h, w, cc);
 
-            % Calculate deviations and entropies for each image
+for y = 1:h
+    parfor x = 1:w
+        for c = 1:cc
+            % Initialize variables to store maximum deviation and entropy values
+            maxDeviation = -inf;
+            maxEntropy = -inf;
+            maxDeviationIndex = 1;
+            maxEntropyIndex = 1;
+
+            % Calculate deviations and entropies for each image and update max values
             for i = 1:numel(pyramids)
                 window = extendedImages{i}(y:y+2*ext_y, x:x+2*ext_x, c);
-                deviations(i) = std2(window)^2;
-                entropies(i) = GetEntropy(window);
+                deviation = var(window(:));
+                entropy = -sum((histcounts(window(:), 256) / numel(window)) .* log2(histcounts(window(:), 256) / numel(window)));
+
+                if deviation > maxDeviation
+                    maxDeviation = deviation;
+                    maxDeviationIndex = i;
+                end
+
+                if entropy > maxEntropy
+                    maxEntropy = entropy;
+                    maxEntropyIndex = i;
+                end
             end
 
-            % Determine the index of the image with the maximum deviation and entropy
-            [~, maxDeviationIndex] = max(deviations);
-            [~, maxEntropyIndex] = max(entropies);
+            % Store deviations and entropies in arrays
+            deviations(y, x, c) = maxDeviation;
+            entropies(y, x, c) = maxEntropy;
 
             % Fusion strategy based on calculated coefficients
             if maxDeviationIndex == maxEntropyIndex

@@ -1,4 +1,4 @@
-function LaplacianPyramidFusion(img_1, img_2, grayscale, levels)
+function img_f = LaplacianPyramidFusion(img_1, img_2, grayscale, levels)
     %% Check sizes of input images
     if ~isequal(size(img_1), size(img_2))
         disp('Error: Image sizes do not match.');
@@ -16,7 +16,7 @@ function LaplacianPyramidFusion(img_1, img_2, grayscale, levels)
     elseif size(img_1, 3) == 1
         img_1 = im2double(img_1);
         img_2 = im2double(img_2);
-        disp('Input images are in grayscale.');
+%         disp('Input images are in grayscale.');
         grayscale = true;
     else
         disp('Error: Image sizes are invalid.');
@@ -24,7 +24,7 @@ function LaplacianPyramidFusion(img_1, img_2, grayscale, levels)
     end
 
     % Initialize time counter
-    tic;
+%     tic;
 
     %% Lacplacian Pyramid decomposition
     pyramid_1 = LaplacianPyramidDecomposition(img_1, levels);
@@ -33,8 +33,8 @@ function LaplacianPyramidFusion(img_1, img_2, grayscale, levels)
 
     img_f = LaplacianPyramidReconstruct(pyramid_f);
 
-    processingTime = toc;
-    fprintf('Processing time = %f s\n', processingTime);
+%     processingTime = toc;
+%     fprintf('Processing time = %f s\n', processingTime);
 
     % Visualize fused Laplacian pyramid
 %     figure;

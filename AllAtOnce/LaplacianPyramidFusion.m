@@ -18,10 +18,17 @@ end
 tic;
 
 %% Lacplacian Pyramid decomposition
+disp('LaplacianPyramidDecomposition: init');
 pyramids = LaplacianPyramidDecomposition(folderPath, imageFiles, levels,grayscale);
-pyramid_f = PyramidFusion(pyramids);
+disp('LaplacianPyramidDecomposition: completed');
 
+disp('PyramidFusion: init');
+pyramid_f = PyramidFusion(pyramids);
+disp('PyramidFusion: completed');
+
+disp('LaplacianPyramidReconstruct: init');
 img_f = LaplacianPyramidReconstruct(pyramid_f);
+disp('LaplacianPyramidReconstruct: completed');
 
 processingTime = toc;
 fprintf('Processing time = %f s\n', processingTime);
